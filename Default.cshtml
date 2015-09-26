@@ -1,0 +1,104 @@
+﻿@using System.Data
+@using System.Data.SqlClient
+@using System.Configuration
+@{
+    var konekcija=new SqlConnection(ConfigurationManager.ConnectionStrings["cnn"].ConnectionString);
+    var komanda=new SqlCommand("select ProductID,CategoryID,SupplierID,ProductName from Products",konekcija);
+    var adapter=new SqlDataAdapter(komanda);
+    var tProducts=new DataTable();
+    adapter.Fill(tProducts);
+    komanda.CommandText="select CategoryID, CategoryName  from Categories";
+    var tCategories=new DataTable();
+    adapter.Fill(tCategories);
+    komanda.CommandText=@"select distinct  C.CategoryID, S.SupplierID, S.CompanyName  from Suppliers S 
+inner join Products P on S.SupplierID=P.SupplierID inner join 
+Categories C on C.CategoryID=P.CategoryID ";
+    var tSuppliers=new DataTable();
+    adapter.Fill(tSuppliers);
+}
+<style>
+    select {width: 250px; float: left; }
+     .overflow { height: 200px; }
+    #cbProduct {float: right;}
+</style>
+<script>
+   
+  </script>
+<section id="main">
+    <div id="labele"></div>
+     <select name="cbCategory" id="cbCategory">
+        @{foreach(System.Data.DataRow red in tCategories.Rows)
+          {           
+              <option value="@red["CategoryID"]">@red["CategoryName"].ToString()</option>                 
+          }
+          }
+         </select> 
+     <select name="cbSupplier" id="cbSupplier" >
+        @{foreach(System.Data.DataRow red in tSuppliers.Rows)
+          {           
+              <option data-cid="@red["CategoryID"]" value="@red["SupplierID"]">@red["CompanyName"].ToString()</option>                 
+          }
+          }
+         </select>
+        <select name="cbProduct" id="cbProduct">
+        @{foreach(System.Data.DataRow red in tProducts.Rows)
+          {           
+              <option data-cid="@red["CategoryID"]" data-sid="@red["SupplierID"]" value="@red["ProductID"]">@red["ProductName"].ToString()</option>                                                                                                        
+          }
+          }
+         </select> 
+ </section> 
+<!--<div id="sidebar"></div> -->
+  <script>
+      $(function () {
+          $("#cbCategory").selectmenu()
+                  .selectmenu("menuWidget")
+                .addClass("overflow");
+          $("#cbSupplier").selectmenu()
+                  .selectmenu("menuWidget")
+                .addClass("overflow");
+          $("#cbProduct").selectmenu()
+                  .selectmenu("menuWidget")
+                .addClass("overflow");
+          $("#cbCategory").selectmenu({
+              change: function (event, ui) {
+                  if ($(this).data('options') == undefined) {
+                      $(this).data('options', $('#cbSupplier option').clone());
+                  }
+                  if ($(this).data('options2') == undefined) {
+                      $(this).data('options2', $('#cbProduct option').clone());
+                  }
+                  var id = $(this).val();
+                  var options = $(this).data('options').filter('[data-cid=' + id + ']'); //value
+                  $('#cbSupplier').html(options);
+                  $("#cbSupplier").selectmenu("refresh");
+                  var idS = $('#cbSupplier').selectmenu().val();
+                  var options2 = $(this).data('options2').filter('[data-cid=' + id + ']');
+                  $('#cbProduct').html(options2);
+                  $("#cbProduct").selectmenu("refresh");
+                  if ($(this).data('options4') == undefined) {
+                      $(this).data('options4', $('#cbProduct option').clone());
+                  }
+                  var options4 = $(this).data('options4').filter('[data-sid=' + idS + ']');
+                  $('#cbProduct').html(options4);
+                  $("#cbProduct").selectmenu("refresh");
+                  /*option = undefined;
+                  option2 = undefined;
+                  option4 = undefined;*/
+              }
+          });
+          $("#cbSupplier").selectmenu({
+              change: function (event, ui) {
+                  if ($(this).data('options3') == undefined) {
+                      $(this).data('options3', $('#cbProduct option').clone());
+                  }
+                  var id = $(this).val();
+                  var options3 = $(this).data('options3').filter('[data-sid=' + id + ']'); //value
+                  $('#cbProduct').html(options3);
+                  $("#cbProduct").selectmenu("refresh");
+                  option3 = undefined;
+              }
+          });
+      });
+      </script>
+
