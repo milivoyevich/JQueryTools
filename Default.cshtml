@@ -19,8 +19,7 @@ Categories C on C.CategoryID=P.CategoryID ";
 <style>
     select {width: 250px; float: left; }
      .overflow { height: 200px; }
-    .labels{text-align: center; width: 250px; height: 20px; float: left;}
-    
+    .labels{text-align: center; width: 250px; height: 20px; float: left;}  
 </style>
 <script>
    
@@ -72,30 +71,30 @@ Categories C on C.CategoryID=P.CategoryID ";
           });
           $("#cbSupplier").selectmenu({
               change: function (event, ui) {
-                  var id = $(this).val();
+                  var idS = $(this).val();
                   var idC = $('#cbCategory').selectmenu().val();
-                  var options3 = $("#cbCategory").selectmenu().data('options2').filter('[data-sid=' + id + ']')
+                  var finProd = $("#cbCategory").selectmenu().data('listProd').filter('[data-sid=' + idS + ']')
                        .filter('[data-cid=' + idC + ']');
-                  $('#cbProduct').html(options3);
+                  $('#cbProduct').html(finProd);
                   $("#cbProduct").selectmenu("refresh");
               }
           });
           $(postaviListe());
 
           function postaviListe() {
-              if (($("#cbCategory").selectmenu().data('options')) === undefined) {
-                  $("#cbCategory").selectmenu().data('options', $('#cbSupplier option').clone());
+              if (($("#cbCategory").selectmenu().data('listSupp')) === undefined) {
+                  $("#cbCategory").selectmenu().data('listSupp', $('#cbSupplier option').clone());
               };
-              if (($("#cbCategory").selectmenu().data('options2')) === undefined) {
-                  $("#cbCategory").selectmenu().data('options2', $('#cbProduct option').clone());
+              if (($("#cbCategory").selectmenu().data('listProd')) === undefined) {
+                  $("#cbCategory").selectmenu().data('listProd', $('#cbProduct option').clone());
               };
-              var id = $("#cbCategory").selectmenu().val();
-              var options = $("#cbCategory").selectmenu().data('options').filter('[data-cid=' + id + ']'); //value
-              $('#cbSupplier').html(options);
+              var idC = $("#cbCategory").selectmenu().val();
+              var finDob = $("#cbCategory").selectmenu().data('listSupp').filter('[data-cid=' + idC + ']'); //value
+              $('#cbSupplier').html(finDob);
               $("#cbSupplier").selectmenu("refresh");
               var idS = $('#cbSupplier').selectmenu().val();
-              var options2 = $("#cbCategory").selectmenu().data('options2').filter('[data-cid=' + id + ']').filter('[data-sid=' + idS + ']');
-              $('#cbProduct').html(options2);
+              var finProd = $("#cbCategory").selectmenu().data('listProd').filter('[data-cid=' + idC + ']').filter('[data-sid=' + idS + ']');
+              $('#cbProduct').html(finProd);
               $("#cbProduct").selectmenu("refresh");
           };
       });
