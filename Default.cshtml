@@ -19,86 +19,85 @@ Categories C on C.CategoryID=P.CategoryID ";
 <style>
     select {width: 250px; float: left; }
      .overflow { height: 200px; }
-    #cbProduct {float: right;}
+    .labels{text-align: center; width: 250px; height: 20px; float: left;}
+    
 </style>
 <script>
    
   </script>
 <section id="main">
-    <div id="labele"></div>
+    <div id="labele">
+    <label class="labels" for="cbCategory">Категорије </label>
+    <label class="labels" for="cbSupplier">Добављачи </label>
+    <label class="labels" for="cbProduct">Производи</label>    
+        </div>
      <select name="cbCategory" id="cbCategory">
         @{foreach(System.Data.DataRow red in tCategories.Rows)
           {           
               <option value="@red["CategoryID"]">@red["CategoryName"].ToString()</option>                 
           }
           }
-         </select> 
+      </select>   
      <select name="cbSupplier" id="cbSupplier" >
         @{foreach(System.Data.DataRow red in tSuppliers.Rows)
           {           
               <option data-cid="@red["CategoryID"]" value="@red["SupplierID"]">@red["CompanyName"].ToString()</option>                 
           }
           }
-         </select>
-        <select name="cbProduct" id="cbProduct">
+     </select>  
+     <select name="cbProduct" id="cbProduct">
         @{foreach(System.Data.DataRow red in tProducts.Rows)
           {           
               <option data-cid="@red["CategoryID"]" data-sid="@red["SupplierID"]" value="@red["ProductID"]">@red["ProductName"].ToString()</option>                                                                                                        
           }
           }
-         </select> 
+      </select>
  </section> 
 <!--<div id="sidebar"></div> -->
   <script>
       $(function () {
           $("#cbCategory").selectmenu()
-                  .selectmenu("menuWidget")
-                .addClass("overflow");
+                       .selectmenu("menuWidget")
+                     .addClass("overflow");
           $("#cbSupplier").selectmenu()
-                  .selectmenu("menuWidget")
-                .addClass("overflow");
+                       .selectmenu("menuWidget")
+                     .addClass("overflow");
           $("#cbProduct").selectmenu()
-                  .selectmenu("menuWidget")
-                .addClass("overflow");
+                       .selectmenu("menuWidget")
+                     .addClass("overflow");
           $("#cbCategory").selectmenu({
               change: function (event, ui) {
-                  if ($(this).data('options') == undefined) {
-                      $(this).data('options', $('#cbSupplier option').clone());
-                  }
-                  if ($(this).data('options2') == undefined) {
-                      $(this).data('options2', $('#cbProduct option').clone());
-                  }
-                  var id = $(this).val();
-                  var options = $(this).data('options').filter('[data-cid=' + id + ']'); //value
-                  $('#cbSupplier').html(options);
-                  $("#cbSupplier").selectmenu("refresh");
-                  var idS = $('#cbSupplier').selectmenu().val();
-                  var options2 = $(this).data('options2').filter('[data-cid=' + id + ']');
-                  $('#cbProduct').html(options2);
-                  $("#cbProduct").selectmenu("refresh");
-                  if ($(this).data('options4') == undefined) {
-                      $(this).data('options4', $('#cbProduct option').clone());
-                  }
-                  var options4 = $(this).data('options4').filter('[data-sid=' + idS + ']');
-                  $('#cbProduct').html(options4);
-                  $("#cbProduct").selectmenu("refresh");
-                  /*option = undefined;
-                  option2 = undefined;
-                  option4 = undefined;*/
+                  postaviListe()
               }
           });
           $("#cbSupplier").selectmenu({
               change: function (event, ui) {
-                  if ($(this).data('options3') == undefined) {
-                      $(this).data('options3', $('#cbProduct option').clone());
-                  }
                   var id = $(this).val();
-                  var options3 = $(this).data('options3').filter('[data-sid=' + id + ']'); //value
+                  var idC = $('#cbCategory').selectmenu().val();
+                  var options3 = $("#cbCategory").selectmenu().data('options2').filter('[data-sid=' + id + ']')
+                       .filter('[data-cid=' + idC + ']');
                   $('#cbProduct').html(options3);
                   $("#cbProduct").selectmenu("refresh");
-                  option3 = undefined;
               }
           });
+          $(postaviListe());
+
+          function postaviListe() {
+              if (($("#cbCategory").selectmenu().data('options')) === undefined) {
+                  $("#cbCategory").selectmenu().data('options', $('#cbSupplier option').clone());
+              };
+              if (($("#cbCategory").selectmenu().data('options2')) === undefined) {
+                  $("#cbCategory").selectmenu().data('options2', $('#cbProduct option').clone());
+              };
+              var id = $("#cbCategory").selectmenu().val();
+              var options = $("#cbCategory").selectmenu().data('options').filter('[data-cid=' + id + ']'); //value
+              $('#cbSupplier').html(options);
+              $("#cbSupplier").selectmenu("refresh");
+              var idS = $('#cbSupplier').selectmenu().val();
+              var options2 = $("#cbCategory").selectmenu().data('options2').filter('[data-cid=' + id + ']').filter('[data-sid=' + idS + ']');
+              $('#cbProduct').html(options2);
+              $("#cbProduct").selectmenu("refresh");
+          };
       });
       </script>
 
