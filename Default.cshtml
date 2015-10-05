@@ -1,0 +1,106 @@
+﻿@using System.Data
+@using System.Data.SqlClient
+@using System.Configuration
+@{
+    var konekcija=new SqlConnection(ConfigurationManager.ConnectionStrings["cnn"].ConnectionString);
+    var komanda=new SqlCommand("select ProductID,CategoryID,SupplierID,ProductName from Products",konekcija);
+    var adapter=new SqlDataAdapter(komanda);
+    var tProducts=new DataTable();
+    adapter.Fill(tProducts);
+    komanda.CommandText="select CategoryID, CategoryName, Description, Picture from Categories";
+    var tCategories=new DataTable();
+    adapter.Fill(tCategories);
+    komanda.CommandText=@"select distinct  C.CategoryID, S.SupplierID, S.CompanyName  from Suppliers S 
+inner join Products P on S.SupplierID=P.SupplierID inner join 
+Categories C on C.CategoryID=P.CategoryID ";
+    var tSuppliers=new DataTable();
+    adapter.Fill(tSuppliers);
+}
+<style>
+    select {width: 250px; float: left; }
+     .overflow { height: 200px; }
+    .labels{text-align: center; width: 250px; height: 20px; float: left;}  
+</style>
+<script>
+   
+  </script>
+<section id="main">
+    <div id="labele">
+    <label class="labels" for="cbCategory">Категорије </label>
+    <label class="labels" for="cbSupplier">Добављачи </label>
+    <label class="labels" for="cbProduct">Производи</label>    
+        </div>
+     <select name="cbCategory" id="cbCategory">
+        @{foreach(System.Data.DataRow red in tCategories.Rows)
+          {           
+              <option data-desc="@red["Description"]" data-pict="@Convert.ToBase64String((byte[])red["Picture"]).Substring(104)" value="@red["CategoryID"]">@red["CategoryName"].ToString()</option>                 
+          }
+          }
+      </select>   
+     <select name="cbSupplier" id="cbSupplier" >
+        @{foreach(System.Data.DataRow red in tSuppliers.Rows)
+          {           
+              <option data-cid="@red["CategoryID"]" value="@red["SupplierID"]">@red["CompanyName"].ToString()</option>                 
+          }
+          }
+     </select>  
+     <select name="cbProduct" id="cbProduct">
+        @{foreach(System.Data.DataRow red in tProducts.Rows)
+          {           
+              <option data-cid="@red["CategoryID"]" data-sid="@red["SupplierID"]" value="@red["ProductID"]">@red["ProductName"].ToString()</option>                                                                                                        
+          }
+          }
+      </select>
+    <div><div id="Description"></div><img id="Slika" src="-" alt="-"/>
+    </div>
+ </section> 
+<!--<div id="sidebar"></div> -->
+  <script>
+      $(function () {
+          $("#cbCategory").selectmenu()
+                             .selectmenu("menuWidget")
+                           .addClass("overflow");
+          $("#cbSupplier").selectmenu()
+                             .selectmenu("menuWidget")
+                           .addClass("overflow");
+          $("#cbProduct").selectmenu()
+                             .selectmenu("menuWidget")
+                           .addClass("overflow");
+          $("#cbCategory").selectmenu({
+              change: function (event, ui) {
+                  $('#Description').html($(ui.item.element).data('desc'));
+                  $('#Slika').attr('src', 'data:image/png;base64,' + $(ui.item.element).data('pict'));
+                  postaviListe();
+              }
+          });
+          $("#cbSupplier").selectmenu({
+              change: function (event, ui) {
+                  var idS = $(this).val();
+                  var idC = $('#cbCategory').selectmenu().val();
+                  var finProd = $("#cbCategory").selectmenu().data('listProd').filter('[data-sid=' + idS + ']')
+                             .filter('[data-cid=' + idC + ']');
+                  $('#cbProduct').html(finProd);
+                  $("#cbProduct").selectmenu("refresh");
+              }
+          });
+          $(postaviListe());      
+
+          function postaviListe() {
+              if (($("#cbCategory").selectmenu().data('listSupp')) === undefined) {
+                  $("#cbCategory").selectmenu().data('listSupp', $('#cbSupplier option').clone());
+              };
+              if (($("#cbCategory").selectmenu().data('listProd')) === undefined) {
+                  $("#cbCategory").selectmenu().data('listProd', $('#cbProduct option').clone());
+              };
+              var idC = $("#cbCategory").selectmenu().val();
+              var finDob = $("#cbCategory").selectmenu().data('listSupp').filter('[data-cid=' + idC + ']'); //value
+              $('#cbSupplier').html(finDob);
+              $("#cbSupplier").selectmenu("refresh");
+              var idS = $('#cbSupplier').selectmenu().val();
+              var finProd = $("#cbCategory").selectmenu().data('listProd').filter('[data-cid=' + idC + ']').filter('[data-sid=' + idS + ']');
+              $('#cbProduct').html(finProd);
+              $("#cbProduct").selectmenu("refresh");
+          };
+      });
+      </script>
+
