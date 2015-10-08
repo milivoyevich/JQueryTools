@@ -7,11 +7,7 @@
     var adapter=new SqlDataAdapter(komanda);
     var tProducts=new DataTable();
     adapter.Fill(tProducts);
-<<<<<<< HEAD
     komanda.CommandText="select CategoryID, CategoryName, Description, Picture from Categories";
-=======
-    komanda.CommandText="select CategoryID, CategoryName  from Categories";
->>>>>>> da93b691df270cc938ae95c07b6df97f1568ba03
     var tCategories=new DataTable();
     adapter.Fill(tCategories);
     komanda.CommandText=@"select distinct  C.CategoryID, S.SupplierID, S.CompanyName  from Suppliers S 
@@ -37,11 +33,7 @@ Categories C on C.CategoryID=P.CategoryID ";
      <select name="cbCategory" id="cbCategory">
         @{foreach(System.Data.DataRow red in tCategories.Rows)
           {           
-<<<<<<< HEAD
               <option data-desc="@red["Description"]" data-pict="@Convert.ToBase64String((byte[])red["Picture"]).Substring(104)" value="@red["CategoryID"]">@red["CategoryName"].ToString()</option>                 
-=======
-              <option value="@red["CategoryID"]">@red["CategoryName"].ToString()</option>                 
->>>>>>> da93b691df270cc938ae95c07b6df97f1568ba03
           }
           }
       </select>   
@@ -59,17 +51,13 @@ Categories C on C.CategoryID=P.CategoryID ";
           }
           }
       </select>
-<<<<<<< HEAD
     <div><div id="Description"></div><img id="Slika" src="-" alt="-"/>
     </div>
-=======
->>>>>>> da93b691df270cc938ae95c07b6df97f1568ba03
  </section> 
 <!--<div id="sidebar"></div> -->
   <script>
       $(function () {
           $("#cbCategory").selectmenu()
-<<<<<<< HEAD
                              .selectmenu("menuWidget")
                            .addClass("overflow");
           $("#cbSupplier").selectmenu()
@@ -78,24 +66,11 @@ Categories C on C.CategoryID=P.CategoryID ";
           $("#cbProduct").selectmenu()
                              .selectmenu("menuWidget")
                            .addClass("overflow");
-          $("#cbCategory").selectmenu({
+          $("#cbCategory").selectmenu({            
               change: function (event, ui) {
                   $('#Description').html($(ui.item.element).data('desc'));
                   $('#Slika').attr('src', 'data:image/png;base64,' + $(ui.item.element).data('pict'));
                   postaviListe();
-=======
-                       .selectmenu("menuWidget")
-                     .addClass("overflow");
-          $("#cbSupplier").selectmenu()
-                       .selectmenu("menuWidget")
-                     .addClass("overflow");
-          $("#cbProduct").selectmenu()
-                       .selectmenu("menuWidget")
-                     .addClass("overflow");
-          $("#cbCategory").selectmenu({
-              change: function (event, ui) {
-                  postaviListe()
->>>>>>> da93b691df270cc938ae95c07b6df97f1568ba03
               }
           });
           $("#cbSupplier").selectmenu({
@@ -103,21 +78,14 @@ Categories C on C.CategoryID=P.CategoryID ";
                   var idS = $(this).val();
                   var idC = $('#cbCategory').selectmenu().val();
                   var finProd = $("#cbCategory").selectmenu().data('listProd').filter('[data-sid=' + idS + ']')
-<<<<<<< HEAD
                              .filter('[data-cid=' + idC + ']');
-=======
-                       .filter('[data-cid=' + idC + ']');
->>>>>>> da93b691df270cc938ae95c07b6df97f1568ba03
                   $('#cbProduct').html(finProd);
                   $("#cbProduct").selectmenu("refresh");
               }
           });
-<<<<<<< HEAD
-          $(postaviListe());      
-=======
           $(postaviListe());
->>>>>>> da93b691df270cc938ae95c07b6df97f1568ba03
-
+          $('#Description').html($("#cbCategory").find(':selected').data('desc'));      
+          $('#Slika').attr('src', 'data:image/png;base64,' + $("#cbCategory").find(':selected').data('pict'));
           function postaviListe() {
               if (($("#cbCategory").selectmenu().data('listSupp')) === undefined) {
                   $("#cbCategory").selectmenu().data('listSupp', $('#cbSupplier option').clone());
