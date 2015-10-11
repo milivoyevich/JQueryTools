@@ -1,0 +1,20 @@
+﻿@{
+    
+}
+        <script>
+            $(function () {
+                $(createTable());
+                function createTable() {
+                    var i = 0, rowEl = null,
+                  tableEl = document.createElement("table");
+                    // create 10 table rows, each with two cells
+                    for (i = 1; i <= 10; i++) {
+                        rowEl = tableEl.insertRow();  // DOM method for creating table rows
+                        rowEl.insertCell().textContent = "table cell " + i + "-1";
+                        rowEl.insertCell().textContent = "table cell " + i + "-2";
+                    }
+                    document.getElementById("main").appendChild(tableEl);
+                }
+            });
+  </script>
+<section id="main"></section>

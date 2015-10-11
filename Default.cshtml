@@ -21,9 +21,7 @@ Categories C on C.CategoryID=P.CategoryID ";
      .overflow { height: 200px; }
     .labels{text-align: center; width: 250px; height: 20px; float: left;}  
 </style>
-<script>
-   
-  </script>
+
 <section id="main">
     <div id="labele">
     <label class="labels" for="cbCategory">Категорије </label>
@@ -66,7 +64,7 @@ Categories C on C.CategoryID=P.CategoryID ";
           $("#cbProduct").selectmenu()
                              .selectmenu("menuWidget")
                            .addClass("overflow");
-          $("#cbCategory").selectmenu({            
+          $("#cbCategory").selectmenu({
               change: function (event, ui) {
                   $('#Description').html($(ui.item.element).data('desc'));
                   $('#Slika').attr('src', 'data:image/png;base64,' + $(ui.item.element).data('pict'));
@@ -84,7 +82,9 @@ Categories C on C.CategoryID=P.CategoryID ";
               }
           });
           $(postaviListe());
-          $('#Description').html($("#cbCategory").find(':selected').data('desc'));      
+          
+      
+          $('#Description').html($("#cbCategory").find(':selected').data('desc'));
           $('#Slika').attr('src', 'data:image/png;base64,' + $("#cbCategory").find(':selected').data('pict'));
           function postaviListe() {
               if (($("#cbCategory").selectmenu().data('listSupp')) === undefined) {
